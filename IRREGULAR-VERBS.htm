@@ -1,0 +1,491 @@
+
+   <!--
+
+                 --------------------------------------------------
+                 Irregular verbs test
+                 Version 3 (2006)
+                 D�velopp� par LMR LUMIERE
+                 e.mail: lumierelmr31@gmail.com
+                 Lubumbashi ,R.D congo
+                 --------------------------------------------------
+
+-->
+
+    <script language="JavaScript" type="text/javascript">
+
+// Verbes (Infinitive)
+var TAB_INF = new Array(
+"*","Be","Beat","Become","Begin","Bend","Bite","Bleed","Blow","Break","Bring","Build","Burn",
+"Burst","Buy","Catch","Choose","Come","Cost","Cut","Do","Draw","Dream","Drink","Drive",
+"Eat","Fall","Feed","Feel","Fight","Find","Fly","Forget","Forgive","Freeze","Get","Give",
+"Go","Grow","Hang","Have","Hear","Hide","Hit","Hold","Hurt","Keep","Kneel","Know","Lay",
+"Lead","Lean","Learn","Leave","Lend","Let","Lie","Light","Lose","Make","Mean","Meet",
+"Mistake","Pay","Prove","Put","Read","Ride","Ring","Rise","Run","Say","See","Sell","Send",
+"Set","Shake","Show","Shut","Sing","Sink","Sit","Sleep","Slide","Speak","Spell","Spend",
+"Spill","Spread","Spring","Stand","Steal","Stick","Sting","Sweep","Swell","Swim","Swing",
+"Take","Teach","Tear","Tell","Think","Throw","Understand","Wake","Wear","Weep","Wet","Win",
+"Wind","Write","Spoil","Bear","Creep","Flee","Forbid","Mow","Shine","Shoot","Smell","Sow",
+"Strike","Cling","Dig","Swear")
+
+// Verbes (Simple past)
+var TAB_SP = new Array(
+"*","was/were","Beat","Became","Began","Bent","Bit","Bled","Blew","Broke","Brought","Built","Burned",
+"Burst","Bought","Caught","Chose","Came","Cost","Cut","Did","Drew","Dreamed/dreamt","Drank",
+"Drove","Ate","Fell","Fed","Felt","Fought","Found","Flew","Forgot","Forgave","Froze","Got",
+"Gave","Went","Grew","Hung","Had","Heard","Hid","Hit","Held","Hurt","Kept","Knelt","Knew",
+"Laid","Led","Leaned","Learned","Left","Lent","Let","Lay","Lit/lighted","Lost","Made",
+"Meant","Met","Mistook","Paid","Proved","Put","Read","Rode","Rang","Rose","Ran","Said","Saw",
+"Sold","Sent","Set","Shook","Showed","Shut","Sang","Sank","Sat","Slept","Slide","Spoke",
+"Spelt","Spent","Spilt","Spread","Sprang","Stood","Stole","Stuck","Stung","Swept","Swelled",
+"Swam","Swung","Took","Taught","Tore","Told","Thought","Threw","Understood","Woke","Wore",
+"Wept","Wet","Won","Wound","Wrote","Spoiled/Spoilt","Bore","Crept","Fled","Forbade","Mowed",
+"Shone","Shot","Smelt","Sowed","Struck","Clung","Dug","Swore")
+
+
+// Verbes (Past participle)
+var TAB_PP = new Array(
+"*","Been","Beaten","Become","Begun","Bent","Bitten","Bled","Blown","Broken","Brought","Built",
+"Burned","Burst","Bought","Caught","Chosen","Come","Cost","Cut","Done ","Drawn","Dreamed/dreamt",
+"Drunk","Driven","Eaten","Fallen","Fed","Felt","Fought","Found","Flown","Forgotten","forgiven",
+"Frozen","Gotten/got","Given","Gone","Grown","Hung","Had","Heard","Hidden","Hit","Held","Hurt",
+"Kept","Knelt","known","Laid","Led","Leaned","Learned","Left","Lent","Let","Lain","Lit/lighted",
+"Lost","Made","Meant","Met","Mistaken","Paid","Proved/Proven","Put","Read","Ridden","Rung",
+"Risen","Run","Said","Seen","Sold","Sent","Set","Shaken","Showed/Shown","Shut","Sung","Sunk",
+"Sat","Slept","Slid","Spoken","Spelt","Spent","Spilt","Spread","Sprung","Stood","Stolen",
+"Stuck","Stung","Swept","Swelled","Swum","Swung","Taken","Taught","Torn","Told","Thought",
+"Thrown","Understood","Woken","Worn","Wept","Wet","Won","Wound","Written","Spoiled/Spoilt",
+"Born","Crept","Fled","forbidden","Mown","Shone","Shot","Smelt","Sown","Struck","Clung",
+"Dug","Sworn")
+
+  
+var VerbeMax=125; // nombre maximale de verbes
+var TAB_Selection = new Array; // contient l'ordre al�atoire des verbes
+var TAB_Tense = new Array;  // contient l'ordre al�atoire du temps (inf=1,past=2 ou p.part=3)
+var Position ; // indice courante
+var JeuMax ; // Le nombre de verbes choisi
+var PosMaxAtteint ;   // Si on a arriv� au dernier verbe
+
+var TAB_Verif1 = new Array; // r�ponse : (infinitive)
+var TAB_Verif2 = new Array; // r�ponse : (past)
+var TAB_Verif3 = new Array; // r�ponse : (past participle)
+
+var Correction1 = new Array;// correction1[i] corrig� de TAB_Verif1[i] (si faux)
+var Correction2 = new Array;// correction2[i] corrig� de TAB_Verif2[i] (si faux)
+var Correction3 = new Array;// correction3[i] corrig� de TAB_Verif3[i] (si faux)
+
+var Score;  // Score du jeu
+var temps ;  // Temps atteint
+var Chargement=false ; // Si Chargement=false (le jeu est lanc� pour la 1ere fois)
+
+
+
+
+// Initialisation du jeu
+function Demarrer(mainfrm)
+{
+
+JeuMax = mainfrm.txt_jeuverb.value ;
+
+       if (JeuMax>125 || JeuMax<5) {
+        JeuMax=10;
+         mainfrm.txt_jeuverb.value=JeuMax ;
+       }
+
+Position =0;
+PosMaxAtteint = false ;
+Generation_hasard(mainfrm);
+
+ for (var i=1; i<=VerbeMax; i++)  {
+TAB_Verif1[i]="";
+TAB_Verif2[i]="";
+TAB_Verif3[i]="";
+}
+
+ModifiePosition(mainfrm,1)
+temps = 0 ;
+
+if (Chargement == false) { incrTemps() } ;
+Chargement = true ;
+
+  }
+
+
+ // Supprime les espaces � gauche et � droite d'une chaine
+function Trim(mot){
+ var l ;
+ l = mot.length ;
+ for (var i=1; i<=l; i++)  {
+mot= mot.replace(" ","") ;
+  }
+return mot ;
+}
+
+ // Genearation du format du compteur ( X min et Y sec)
+function DeSecAMin(t)
+{
+var s;
+var min ;
+var sec ;
+  min=Math.floor(t/60);
+  sec = t % 60 ;
+ s = min + " min and " + sec + " sec"  ;
+return s;
+}
+
+
+
+// Incr�mentation du compteur chaque seconde
+function incrTemps() {
+timer = setTimeout("incrTemps()",1000) ;
+mainfrm.BT_timer.value= DeSecAMin(temps)
+temps ++ ;
+}
+
+// Corriger les fautes
+function Corriger(mainfrm) {
+
+   clearTimeout(timer);
+   RefreshTabs(mainfrm);
+   Score = 0 ;
+
+var i ;
+var k ;
+
+ for (var i=1; i<=JeuMax; i++)  {
+
+k=TAB_Selection [i] ;
+
+// initialisation
+Correction1[i]=""
+Correction2[i]=""
+Correction3[i]=""
+
+
+  TAB_Verif1[i] = Trim(TAB_Verif1[i].toLowerCase())  ;
+  TAB_Verif2[i] = Trim(TAB_Verif2[i].toLowerCase())  ;
+  TAB_Verif3[i] = Trim(TAB_Verif3[i].toLowerCase())  ;
+
+ if (TAB_Tense[i]!=1) {
+if (Comparer(TAB_Verif1[i], TAB_INF[k])==true ){
+  Score ++
+}else{
+Correction1[i]="("+TAB_INF[k]+")"
+}
+}
+
+if (TAB_Tense[i]!=2) {
+if (Comparer(TAB_Verif2[i], TAB_SP[k])==true){
+   Score ++
+}else{
+Correction2[i]="("+TAB_SP[k]+")"
+}
+}
+
+if (TAB_Tense[i]!=3) {
+if (Comparer(TAB_Verif3[i], TAB_PP[k])==true){
+
+   Score ++
+}else{
+
+Correction3[i]="("+TAB_PP[k]+")"
+ }
+}
+
+}
+}
+
+
+ // Affiche les verbes stock�s dans les textBox
+function Memoire(mainfrm){
+mainfrm.tbox_inf.value =TAB_Verif1[Position];
+mainfrm.tbox_sp.value= TAB_Verif2[Position] ;
+mainfrm.tbox_pp.value= TAB_Verif3[Position];
+}
+
+
+  // Comparer deux chaines
+ function Comparer(mot1,mot2) //Compare deux mots
+ {
+   var m ;
+     var condition ;
+  mot2 = mot2.toLowerCase()
+  m = mot2.split("/") ;  // Dans le cas o� il existe 2 possibilt�es de r�ponse
+                         // m[O]: 1ere possibilit� et m[1]: 2�me possibilit�
+
+ condition = (mot1==m[0]) || (mot1==m[1]) ;
+ return   condition ;
+ }
+
+
+  // G�n�rateur des nombres al�atoires dans l'intervalle [1,m]
+  function rnd (mainfrm,m) { // Gen�rateur d'un nombre al�atoire
+  var RETrnd;
+  RETrnd =  Math.floor( Math.random()*m )+1;
+  return  RETrnd;
+  }
+
+  // permuter deux �l�ments d'un tableau
+  function permut(indice1,indice2) {
+  var aux ;
+  aux = TAB_Selection[indice1];
+  TAB_Selection[indice1] = TAB_Selection[indice2];
+  TAB_Selection[indice2] = aux ;
+  }
+
+
+  // Perturber les �l�ments d'un tableau au hasard
+  // => l'ordre des verbes devient al�atoire
+  function Generation_hasard(mainfrm) {
+    var i ;
+  for (var i=1; i<=VerbeMax; i++)  {
+    TAB_Selection[i]=i;
+   TAB_Tense[i] =  rnd (mainfrm,3)
+  }
+    for (var i=1; i<=VerbeMax; i++)  {
+    permut ( rnd (mainfrm,VerbeMax), rnd (mainfrm,VerbeMax));
+  }
+  }
+
+
+  // Affectation des valeurs du TextBox vers le tableau.
+ function RefreshTabs(mainfrm) {
+ TAB_Verif1[Position]=mainfrm.tbox_inf.value;
+TAB_Verif2[Position]=mainfrm.tbox_sp.value;
+TAB_Verif3[Position]=mainfrm.tbox_pp.value;
+
+ }
+
+
+// Modifie la postion (verbe suivant / verbe pr�c�dent)
+ function ModifiePosition(mainfrm,sens)
+ {
+  RefreshTabs(mainfrm);
+if (sens==1) {
+  if (Position < JeuMax) {
+     Position ++;
+    }
+      }else{
+        if (Position > 1) {
+           Position --;
+    }
+}
+ if (Position == JeuMax ) {
+  PosMaxAtteint=true ;
+  }
+mainfrm.txt_position.value  = Position+"/"+JeuMax ;
+var hasard_pos ;
+hasard_pos = TAB_Selection[Position] ;
+
+Memoire(mainfrm);
+switch (TAB_Tense[Position]) {
+  case 1:
+   mainfrm.tbox_inf.value = TAB_INF[hasard_pos];
+mainfrm.tbox_sp.select();
+break;
+  case 2:
+ mainfrm.tbox_sp.value= TAB_SP[hasard_pos];
+mainfrm.tbox_inf.select();
+break;
+ case 3:
+  mainfrm.tbox_pp.value= TAB_PP[hasard_pos];
+mainfrm.tbox_inf.select();
+  break;
+}
+
+  }
+
+
+// G�n�ration d'un document Html pour
+// k=0 : affiche le r�sulat ou k=1 affiche la toute la liste des verbes irr�guliers
+function AfficheResultat (mainfrm,k){
+
+var max;
+
+ if (PosMaxAtteint==true || k == 1) {
+
+if (k==0) {
+ Corriger(mainfrm) ;
+    max= JeuMax ;
+ }else{
+      max = VerbeMax ;
+    for (var i=1; i<=max; i++)  {
+
+  Correction1[i]=""
+  Correction2[i]=""
+  Correction3[i]=""
+
+
+ TAB_Verif1[i] = TAB_INF[i] ;
+ TAB_Verif2[i] = TAB_SP[i] ;
+ TAB_Verif3[i] = TAB_PP[i] ;
+    }
+ }
+
+var genHtm ;
+
+
+
+genHtm = '<html><body bgcolor="#000066"  text="#FFFFFF">' ;
+
+if (k==0) {
+genHtm = genHtm + '<center><font size="5"  color="#00FF99"><u><b>Test correction</b></u></font></center>' ;
+}else{
+genHtm = genHtm + '<center><font size="5"  color="#00FF99"><u>Table of irregular verbs</u></font></center>' ;
+}
+
+
+genHtm = genHtm + '       <br />' ;
+
+genHtm = genHtm + ' <hr align="center" />'
+genHtm = genHtm + '       <center><b> <font size="3" color="#CC0000">'
+genHtm = genHtm + '        <br /> '
+
+if (k==0) {
+genHtm = genHtm + ' Mark: '+Score+'/'+(JeuMax*3-JeuMax)
+genHtm = genHtm + '<br /> Test duration ' + DeSecAMin(temps)
+}
+genHtm = genHtm + '   </font> </b></center>  <br />  <table align="center" border="2">';
+genHtm = genHtm + '        <tr>';
+genHtm = genHtm + '          <td><b><center>Verb n�</center></b></td>' ;
+genHtm = genHtm + '                <td><b><center>Infinitive</center></b></td>';
+genHtm = genHtm + '         <td><b><center>Simple past</center></b></td>'  ;
+genHtm = genHtm + '          <td><b><center>Past participle</center></b></td>';
+genHtm = genHtm + '        </tr>';
+
+
+
+
+ for (var i=1; i<=max; i++)  {
+
+   genHtm = genHtm + '  <tr> <td><center><b>'+i+'</b></center></td>';
+
+ genHtm = genHtm + '<td bgcolor="#000000">'+ TAB_Verif1[i] +'<font size="3" color="#FF0000"><b>'+ Correction1[i] + '</b></font></td>';
+   genHtm = genHtm + '<td bgcolor="#000000">'+ TAB_Verif2[i] +'<font size="3" color="#FF0000"><b>'+ Correction2[i] + '</b></font></td>' ;
+   genHtm = genHtm + '<td bgcolor="#000000">'+ TAB_Verif3[i] +'<font size="3" color="#FF0000"><b>'+ Correction3[i] + '</b></font></td>';
+
+    }
+
+
+ genHtm = genHtm + '  </tr>  </table> <br />  </body></html>';
+genHtm = genHtm + '<center><input type="button" name="FermeCmd" value="Replay" tabindex="0"  onclick="history.go(-1)" /> </center> </form>'
+
+document.write(genHtm);
+
+ } // Fin  de la condition
+}     // Fin de la fonction
+
+    </script>
+
+
+  <html>
+
+<head>
+<title>Irregular verbs test</title>
+</head>
+
+<body bgcolor="#000066" text="#FFFFFF" onload="Demarrer(mainfrm)">
+
+<form method="POST" action="--WEBBOT-SELF--" name="mainfrm">
+
+  <p>&nbsp;</p>
+  <p align="center"><font size="6" color="#FFFFCC">Irregular verbs test
+  Version&nbsp; 1.1.</font></p>
+  <div align="center">
+    <center>
+    <table border="1" width="373" height="128" bgcolor="#ECE9D8">
+      <tr>
+        <td width="170" height="18" bgcolor="#CCCCCC"><font size="4" color="#000000">Tense</font></td>
+        <td width="187" height="18" bgcolor="#CCCCCC"><font size="4" color="#000000">Verb</font></td>
+      </tr>
+      <tr>
+        <td width="170" height="32" bgcolor="#CCCCCC"><font size="4" color="#000000">Infinitive</font></td>
+        <td width="187" height="32" bgcolor="#FFFFFF">
+          <p align="center"><input type="text" name="tbox_inf" size="20" style="font-size: 12 pt"></td>
+      </tr>
+      <tr>
+        <td width="170" height="30" bgcolor="#CCCCCC"><font size="4" color="#000000">Simple
+          past</font></td>
+        <td width="187" height="32" bgcolor="#FFFFFF">
+          <p align="center"><input type="text" name="tbox_sp" size="20" style="font-size: 12 pt"></td>
+      </tr>
+      <tr>
+        <td width="170" height="31" bgcolor="#CCCCCC"><font size="4" color="#000000">Past
+          participle</font></td>
+        <td width="187" height="32" bgcolor="#FFFFFF">
+          <p align="center"><input type="text" name="tbox_pp" size="20" style="font-size: 12 pt"></td>
+      </tr>
+    </table>
+    </center>
+  </div>
+        <br />
+        <center> <input type="text" name="BT_timer" value="00 : 00" style="border: outset; background: #CCCCCC; color: #000000;text-align: center" readonly="readonly" />  </center>
+        <br />
+ <div align="center">
+
+  <center>
+    <table width="634" height="129" bgcolor="#ECE9D8" style="border: outset">
+      <tr>
+        <td width="634" height="129">
+          <div align="center">
+            <table border="0" width="592" height="65">
+              <tr>
+                <td width="338" height="65" rowspan="2" valign="top" bgcolor="#ECE9D8"><font color="#000000"><input type="button" value=" Restart " name="B1" style="background-color: #FF0000" onclick="Demarrer(mainfrm)">
+                  Number of verbs (124 max) = <!--webbot bot="Validation"
+                  S-Data-Type="Integer" S-Number-Separators="x"
+                  S-Validation-Constraint="Greater than or equal to"
+                  S-Validation-Value="1" --><input type="text" name="txt_jeuverb" size="3" value="10"></font></td>
+                <td width="244" height="49" valign="bottom" bgcolor="#ECE9D8">
+                  <p align="left"><font color="#000000">&nbsp;<input type="button" value="&lt; Previous" name="B2" onclick="ModifiePosition(mainfrm,2)">&nbsp;
+                  <input type="button" value="Next &gt;" name="B3" onclick="ModifiePosition(mainfrm,1)"></font></td>
+              </tr>
+              <tr>
+                <td width="244" height="8" valign="bottom" bgcolor="#ECE9D8">
+                  <p align="center"><font color="#000000">Position = <!--webbot
+                  bot="Validation" S-Data-Type="Integer" S-Number-Separators="x"
+                  S-Validation-Constraint="Greater than or equal to"
+                  S-Validation-Value="1" --><input type="text" name="txt_position" size="5" readonly="readonly"></font></td>
+              </tr>
+            </table>
+          </div>
+          <div align="center">
+            <table border="0" width="592" height="28">
+              <tr>
+                <td width="343" height="28" valign="bottom" bgcolor="#ECE9D8">
+                  <p align="left"><font color="#000000"><input type="button" value="Table of irregular verbs" name="B5"  onclick="AfficheResultat (mainfrm,1)"></font></td>
+                <td width="239" height="28" bgcolor="#ECE9D8">
+                  <p align="left"><font color="#000000"><input type="button" value="autocorrection" name="B4" style="background-color: #CCCCFF; border-style: ridge"  onclick="AfficheResultat (mainfrm,0)"></font></td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+    </center>
+  </div>
+  <p>&nbsp;</p>
+  <div align="center">
+
+   <center>
+   <table border="0" width="886" height="23">
+      <tr>
+        <td width="540" height="23"><font color="#C0C0C0">Designed by LMR LUMIERE. April 2023 Version 1.1. Lubumbashi, Democratic Republic of Congo</font></td>
+      </center>
+      <td width="336" height="23">
+        <p align="right"><font color="#C0C0C0"><a href="mailto:lumierelmr31@gmail.com" style="color: #FFFFCC">e.mail:
+        lumierelmr31@gmail.com</a></font></td>
+    </tr>
+    </table>
+  </div>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+</form>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>
+
+
